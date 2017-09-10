@@ -123,7 +123,9 @@
     
     $(document).ready(function(){
        
-       $(".btn").on("click", goTo());
+       $(".btn").on("click", function(){
+           goTo();
+       });
        $("input").keypress(function(k){
           if(k.which == 13){
               goTo();
