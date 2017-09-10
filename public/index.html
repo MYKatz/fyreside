@@ -1,0 +1,135 @@
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css">
+
+<!-- GOOGLE FONTS -->
+
+<link href="https://fonts.googleapis.com/css?family=Baloo+Bhaijaan|Passion+One|Bevan" rel="stylesheet">
+
+<!-- Favicon -->
+
+<link rel="shortcut icon" type="image/png" href="static/img/icon.png"/>
+<title>Fyreside</title>
+<style>
+
+    body{
+        background-color: #2D3047;
+        color: white;
+    }
+    
+    nav{
+        box-shadow: 0px 3px #CA054D;
+    }
+    
+    #main{
+        background-color: #1E1E2D;
+        
+    }
+    
+    .container{
+        padding: 0px;
+    }
+    
+    h1{
+        font-family: 'Bevan', cursive;
+        font-size: 5rem;
+        color: ghostwhite;
+    }
+    
+    h2{
+        font-family: 'Bevan', cursive;
+        color: ghostwhite;
+        font-size: 3.5rem;
+    }
+    #faq{
+        background-color: #140B14;
+    }
+    
+    li{
+        font-size: 1.5rem;
+    }
+
+</style>
+
+
+
+<div class="container">
+    
+    
+    <nav style="background-color:#3B1C32" class="navbar navbar-toggleable-md navbar-light bg-inverse">
+        <a class="navbar-brand"> 
+            <img src="static/img/icon.png" width="30" height="30" class="d-inline-block align-top" alt="">
+            Fyreside </a>
+    </nav>
+
+</div>
+
+<div class="container" id="main">
+
+    <h1 class="text-center pt-2"> Welcome to Fyreside! </h1>
+
+    <h3 class="text-center"> Watch large <span style="color:#6034b1">twitch</span> <span style="display: none"> + <span style="color:#CD201F;">youtube</span> </span> streams... <br> with a chat that you can actually interact with. </h3>
+    
+    <div class="row py-5">
+        <div class="col-2"></div>
+        <div class="col-8">
+        
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Enter a twitch channel name..." aria-label="Enter a twitch channel name...">
+                <span class="input-group-btn">
+                <button class="btn btn-danger" type="button">Go!</button>
+            </span>
+            </div>
+        
+        </div>
+    </div>
+</div>
+
+<div class="container pt-2" id="faq">
+    <h2 class="text-center">How does it work?</h2>
+    
+    <div class="row">
+    
+        <div class="col-5"></div>
+        <div class="col-7">
+            
+            <ol style="">
+                <li> Find your favourite stream on Twitch.tv or Youtube and enter its URL into Fyreside</li>
+                <li> We'll randomly put you into a chatroom with 25 people or less.</li>
+                <li> Watch the stream, meet new people, and have a conversation about the game. </li>
+            </ol>
+
+        
+        </div>
+    
+    </div>
+
+    
+</div>
+
+<script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+
+    
+    function goTo(){
+        if($("input").val().length > 0){
+            window.location.replace("goto/"+$("input").val());
+        }
+        
+    }
+    
+    $(document).ready(function(){
+       
+       $(".btn").on("click", goTo());
+       $("input").keypress(function(k){
+          if(k.which == 13){
+              goTo();
+          } 
+       });
+       
+    });
+    
+</script>
