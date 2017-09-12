@@ -84,7 +84,7 @@ function getRandomColor() {
 var messages = [];
 var sockets = [];
 
-var limit = 25;
+var limit = 5;
 
 io.on('connection', function (socket) {
     
@@ -134,8 +134,9 @@ io.on('connection', function (socket) {
       console.log(msg.val);
       socket.get("color", function(err, color){
         socket.get("name", function(err, name){
-          //io.sockets.clients(msg.room).forEach(function (socket){
-            io.sockets.in(Object.keys(io.sockets.manager.roomClients[socket.id])[0]).emit("msg",{"msg": msg.val, "col": color, "name": name});
+            console.log("HEYOOOOOOO!");
+            console.log(Object.keys(io.sockets.manager.roomClients[socket.id])[1]);
+            io.sockets.in(Object.keys(io.sockets.manager.roomClients[socket.id])[1].substring(1)).emit("msg",{"msg": msg.val, "col": color, "name": name});
         //})
         
       });
