@@ -15,6 +15,8 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var session = require('express-session');
 
+var Channel = require("./app/models/channel");
+
 require('./config/passport')(passport);
 
 
@@ -54,6 +56,10 @@ app.get("/api/getUser", function(req, res){
   else{res.end("error")}
 });
 
+app.get("/viewerTest", function(req, res){
+  res.sendFile(__dirname + "/public/viewer.html", {"channel" : req.cookies.channel});
+});
+
 app.get("/viewer", function(req, res){
   if(!req.isAuthenticated()){res.redirect("/");}
   else{
@@ -67,10 +73,73 @@ app.get('/auth/twitch/callback', passport.authenticate('twitch', {
   failureRedirect : '/failure'
 }));
 
+app.get("/api/topSix", function(req, res){
+  Channel.find({}).sort({viewers: -1}).limit(6).lean().exec( 
+    function(err, projects) {
+        if(err){throw err;}
+        else{
+          res.send(projects);
+        }
+    }
+  );
+});
+
 
 app.use('/static', express.static('client'));
 
-// Socket.io shit.
+// Socket.io.
+
+
+function createChannel(channelName){
+  Channel.findOne({"name": channelName}, function(err, user){
+    if(err){throw err;}
+    if(user){return}
+    else{
+      var newChannel = new Channel();
+      newChannel.name = channelName;
+      newChannel.viewers = 0;
+      newChannel.save(function(err){
+        if(err){throw err;}
+        console.log("channel saved: " + channelName);
+      });
+    }
+  });
+}
+
+function addToChannel(channelName){
+  Channel.findOne({"name": channelName}, function(err, channel){
+    if(err){throw err;}
+    if(channel){
+      channel.viewers = channel.viewers + 1;
+      channel.save(function(err, updatedChannel){
+        if(err){console.log("ERROR");}
+      });
+    }
+    else{
+      createChannel(channelName);
+      addToChannel(channelName);
+    }
+  });
+}
+
+function removeFromChannel(channelName){
+  Channel.findOne({"name": channelName}, function(err, channel){
+    if(err){throw err;}
+    if(channel){
+      channel.viewers = channel.viewers - 1;
+      channel.save(function(err, updatedChannel){
+        if(err){console.log("ERROR");}
+      });
+    }
+    else{
+      createChannel(channelName);
+      removeFromChannel(channelName);
+    }
+  });
+}
+
+
+
 
 function getRandomColor() {
       var letters = '0123456789ABCDEF';
@@ -84,7 +153,7 @@ function getRandomColor() {
 var messages = [];
 var sockets = [];
 
-var limit = 5;
+var limit = 25;
 
 io.on('connection', function (socket) {
     
@@ -96,10 +165,13 @@ io.on('connection', function (socket) {
     
     socket.set("color", getRandomColor(), function(err){
       if(err){throw err;}
-    })
+    });
 
     socket.on('disconnect', function () {
       sockets.splice(sockets.indexOf(socket), 1);
+      socket.get("room", function(err, room){
+        removeFromChannel(room);
+      });
       updateRoster();
     });
 
@@ -127,6 +199,10 @@ io.on('connection', function (socket) {
       }
       console.log("JOINING ROOM: " + rm+"??"+num);
       socket.join(rm+"??"+num);
+      socket.set("room", room, function(err){
+        
+      });
+      addToChannel(room);
     });
     
     socket.on('msg', function(msg){
