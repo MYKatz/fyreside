@@ -211,7 +211,7 @@ io.on('connection', function (socket) {
         socket.get("name", function(err, name){
             console.log("HEYOOOOOOO!");
             console.log(Object.keys(io.sockets.manager.roomClients[socket.id])[1]);
-            io.sockets.in(Object.keys(io.sockets.manager.roomClients[socket.id])[1].substring(1) || "OOPS" ).emit("msg",{"msg": msg.val, "col": color, "name": name});
+            io.sockets.in(Object.keys((io.sockets.manager.roomClients[socket.id])[1] || io.sockets.manager.roomClients[socket.id])[0]).substring(1)).emit("msg",{"msg": msg.val, "col": color, "name": name});
         //})
         
       });
