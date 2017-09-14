@@ -90,7 +90,7 @@ app.use('/static', express.static('client'));
 // Socket.io.
 
 
-function createChannel(channelName){
+function createChannel(channelName, fn){
   Channel.findOne({"name": channelName}, function(err, user){
     if(err){throw err;}
     if(user){return}
@@ -101,6 +101,7 @@ function createChannel(channelName){
       newChannel.save(function(err){
         if(err){throw err;}
         console.log("channel saved: " + channelName);
+        fn(channelName);
       });
     }
   });
@@ -116,8 +117,7 @@ function addToChannel(channelName){
       });
     }
     else{
-      createChannel(channelName);
-      addToChannel(channelName);
+      createChannel(channelName, addToChannel());
     }
   });
 }
@@ -132,8 +132,7 @@ function removeFromChannel(channelName){
       });
     }
     else{
-      createChannel(channelName);
-      removeFromChannel(channelName);
+      createChannel(channelName, removeFromChannel);
     }
   });
 }
