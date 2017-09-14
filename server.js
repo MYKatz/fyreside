@@ -117,7 +117,7 @@ function addToChannel(channelName){
       });
     }
     else{
-      createChannel(channelName, addToChannel());
+      createChannel(channelName, addToChannel);
     }
   });
 }
@@ -132,7 +132,7 @@ function removeFromChannel(channelName){
       });
     }
     else{
-      createChannel(channelName, removeFromChannel);
+      //
     }
   });
 }
