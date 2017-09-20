@@ -46,6 +46,20 @@
     li{
         font-size: 1.5rem;
     }
+    
+    .profile img{
+      border-width: 3px;
+      border-style: solid;
+      border-color: #3B1C32;
+      width: 200px;
+      height: 200px;
+    }
+    
+    .profile a{
+        text-align:center;
+        display:block;
+        color: #CA054D;
+    }
 
 </style>
 
@@ -64,7 +78,7 @@
 
 <div class="container" id="main">
 
-    <h1 class="text-center pt-2"> Welcome to Fyreside! </h1>
+    <h1 class="text-center pt-2"> Fyreside </h1>
 
     <h3 class="text-center"> Watch large <span style="color:#6034b1">twitch</span> <span style="display: none"> + <span style="color:#CD201F;">youtube</span> </span> streams... <br> with a chat that you can actually interact with. </h3>
     
@@ -83,26 +97,30 @@
     </div>
 </div>
 
-<div class="container pt-2" id="faq">
-    <h2 class="text-center">How does it work?</h2>
+<div class="container pt-2 profile" id="faq">
+    <h2 class="text-center">Featured</h2>
     
-    <div class="row">
-    
-        <div class="col-5">
-		<script data-cfasync='false' type='text/javascript' src='https://p243555.clksite.com/adServe/banners?tid=243555_463738_0'></script>
-	</div>
-        <div class="col-7">
+    <div id="featured" class="row">
+    <!--    <div class="col-4" style="">
             
-            <ol style="">
-                <li> Find your favourite stream on Twitch.tv or Youtube and enter its URL into Fyreside</li>
-                <li> We'll randomly put you into a chatroom with 25 people or less.</li>
-                <li> Watch the stream, meet new people, and have a conversation about the game. </li>
-            </ol>
+            <img src="static/img/twitch.png" class="mx-auto d-block" alt="">
+            <a href="#" class="mx-auto">QWERTYUIOPASDFGHJKLZXCVBN</a>
+            <p class="text-center"style="color:white">Viewers: 0</p>
+            
+        </div>
+        <div class="col-4" style="">
+            
+            <img src="static/img/twitch.png" class="mx-auto d-block" alt="">
+        </div>
+        <div class="col-4" style="">
+            
+            <img src="static/img/twitch.png" class="mx-auto d-block" alt="">
+        </div>
+	</div> -->
 
         
-        </div>
+</div>
     
-    </div>
 
     
 </div>
@@ -124,6 +142,13 @@
     }
     
     $(document).ready(function(){
+        
+        
+       $.getJSON("/api/topThree", function(data){
+            for(var i=0;i<3;i++){
+                $("#featured").append('<div class="col-4" style=""><a href="/goto/'+data[i]["name"]+'" class="mx-auto"><img src="'+data[i]["pic"]+'" class="mx-auto d-block" alt="">'+data[i]["name"]+'</a><p class="text-center"style="color:white">Viewers: '+data[i]["viewers"]+'</p></div>')
+            }
+       });
        
        $(".btn").on("click", function(){
            goTo();

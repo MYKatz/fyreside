@@ -5,6 +5,8 @@
 //
 var http = require('http');
 var path = require('path');
+var cache = require('memory-cache');
+var request = require('request');
 require("dotenv").load();
 var async = require('async');
 var socketio = require('socket.io');
@@ -74,7 +76,7 @@ app.get('/auth/twitch/callback', passport.authenticate('twitch', {
 }));
 
 app.get("/api/topSix", function(req, res){
-  Channel.find({}).sort({viewers: -1}).limit(6).lean().exec( 
+  Channel.find({}).sort({viewers: -1}).limit(3).lean().exec( 
     function(err, projects) {
         if(err){throw err;}
         else{
@@ -84,6 +86,45 @@ app.get("/api/topSix", function(req, res){
   );
 });
 
+app.get("/api/topThree", function(req, res){
+  var tt = cache.get("three")
+  if(tt){
+    res.send(tt);
+  }
+  else{
+    Channel.find({}).sort({viewers: -1}).limit(3).lean().exec( 
+    function(err, projects) {
+        if(err){throw err;}
+        else{
+          var toR = [];
+          for(var i=0;i<projects.length;i++){
+            var obj = {};
+            obj.name = projects[i]["name"];
+            obj.viewers = projects[i]["viewers"];
+            toR.push(obj);
+          }
+          request({
+              url: "https://api.twitch.tv/helix/users?login="+toR[0]["name"]+"&login="+toR[1]["name"]+"&login="+toR[2]["name"],
+              headers: {
+                'Client-ID': "4nam4caqs74579ue5a8gzb7fhtcq7r",
+                'Authorization': 'OAuth iu3zvrk91rnndd1s20ix8h0kf968em'
+              }
+            }, function(err, r, body){
+              console.log(body);
+              var body = JSON.parse(body);
+              if(err){throw err;}
+              toR[0].pic = body.data[0]["profile_image_url"];
+              toR[1].pic = body.data[1]["profile_image_url"];
+              toR[2].pic = body.data[2]["profile_image_url"];
+              cache.put('three', toR);
+              res.send(toR);
+              
+            });
+        }
+    }
+  );
+  }
+});
 
 app.use('/static', express.static('client'));
 
