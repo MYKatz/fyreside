@@ -116,7 +116,7 @@ app.get("/api/topThree", function(req, res){
               toR[0].pic = body.data[0]["profile_image_url"];
               toR[1].pic = body.data[1]["profile_image_url"];
               toR[2].pic = body.data[2]["profile_image_url"];
-              cache.put('three', toR);
+              cache.put('three', toR, 10000);
               res.send(toR);
               
             });
