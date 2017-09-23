@@ -255,11 +255,11 @@ io.on('connection', function (socket) {
               console.log(Object.keys(io.sockets.manager.roomClients[socket.id])[1]);
               io.sockets.in(Object.keys(io.sockets.manager.roomClients[socket.id])[1].substring(1)).emit("msg",{"msg": msg.val, "col": color, "name": name});
           //})
-          } 
+         
       });
     });
       
-      
+      }  
     });
   });
 
