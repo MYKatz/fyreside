@@ -246,15 +246,16 @@ io.on('connection', function (socket) {
     });
     
     socket.on('msg', function(msg){
-      console.log(msg.room);
-      console.log(msg.val);
-      socket.get("color", function(err, color){
-        socket.get("name", function(err, name){
-            console.log("HEYOOOOOOO!");
-            console.log(Object.keys(io.sockets.manager.roomClients[socket.id])[1]);
-            io.sockets.in(Object.keys(io.sockets.manager.roomClients[socket.id])[1].substring(1)).emit("msg",{"msg": msg.val, "col": color, "name": name});
-        //})
-        
+      if(msg.val.length > 0){
+        console.log(msg.room);
+        console.log(msg.val);
+        socket.get("color", function(err, color){
+          socket.get("name", function(err, name){
+              console.log("HEYOOOOOOO!");
+              console.log(Object.keys(io.sockets.manager.roomClients[socket.id])[1]);
+              io.sockets.in(Object.keys(io.sockets.manager.roomClients[socket.id])[1].substring(1)).emit("msg",{"msg": msg.val, "col": color, "name": name});
+          //})
+          } 
       });
     });
       
